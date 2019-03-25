@@ -36,6 +36,7 @@ public class Config {
     protected XMLConfiguration xml;
     private String proxyHost;
     private int proxyPort = 0;
+    private String noProxyHosts;
     private String proxyApi;
     private static Config config;
 
@@ -91,6 +92,12 @@ public class Config {
         return spiderUrls;
     }
 
+    public int getMaxDepth() {
+        String portAsString = validateAndGetString("scanner.maxDepth");
+        if (portAsString != null && portAsString.length() > 0) return Integer.parseInt(portAsString);
+        return 10;
+    }
+
     public String getClassName() {
         return validateAndGetString("class");
     }
@@ -125,8 +132,20 @@ public class Config {
         }
     }
 
+    /*
+        If value is defined as a system environment variable, then return its value.
+        If not, then search for it in the config file
+    */
     private String validateAndGetString(String value) {
-        String ret = getXml().getString(value);
+        String ret = System.getenv(value);
+        if (ret != null) return ret;
+        ret = getXml().getString(value);
+        if (ret == null) throw new RuntimeException(value+" not defined in config.xml");
+        return ret;
+    }
+    
+    private String[] validateAndGetStringArray(String value) {
+        String[] ret = getXml().getStringArray(value);
         if (ret == null) throw new RuntimeException(value+" not defined in config.xml");
         return ret;
     }
@@ -193,6 +212,8 @@ public class Config {
     public String getNessusUsername() { return validateAndGetString("nessus.username");}
 
     public String getNessusPassword() { return validateAndGetString("nessus.password");}
+    
+    public String getNoProxyHosts() { return String.join(",", validateAndGetStringArray("upstreamProxy.noProxyHosts"));}
 
     public String getUpstreamProxyHost() { return validateAndGetString("upstreamProxy.host"); }
 
@@ -200,6 +221,16 @@ public class Config {
         String portAsString = validateAndGetString("upstreamProxy.port");
         if (portAsString != null && portAsString.length() > 0) return Integer.parseInt(portAsString);
         return 80;
+    }
+
+    public String getSslHost(){
+        return validateAndGetString("sslyze.targetHost");
+    }
+
+    public int getSslPort(){
+        String portAsString =  validateAndGetString("sslyze.targetPort");
+        if (portAsString != null && portAsString.length() > 0) return Integer.parseInt(portAsString);
+        return 443;
     }
 
     public List<String> getSessionIDs() {

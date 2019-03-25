@@ -1,7 +1,9 @@
+[![Build Status](https://travis-ci.org/nicolasiltis/bdd-security.svg?branch=master)](https://travis-ci.org/nicolasiltis/bdd-security)
+
 
 ![](https://www.continuumsecurity.net/wp-content/uploads/2016/10/bdd-security160.png) 
 
-Powered by <img src="https://cucumber.io/images/cucumber-logo.svg" width="200"/>
+<img src="https://github.com/cucumber-ltd/brand/blob/master/images/svg/tm/cucumber-compatible-black.svg" width="300"/>
 
 BDD-Security is a security testing framework that uses Behaviour Driven Development concepts to create self-verifying security specifications.
 

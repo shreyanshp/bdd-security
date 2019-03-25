@@ -100,6 +100,14 @@ public class AppScanningSteps {
         Files.write(pathToFile, xmlReport);
     }
 
+    @Then("the HTML report is written to the file (.*)")
+    public void writeHtmlReport(String path) throws IOException {
+        byte[] htmlReport = scanner.getHtmlReport();
+        Path pathToFile = Paths.get(path);
+        Files.createDirectories(pathToFile.getParent());
+        Files.write(pathToFile, htmlReport);
+    }
+
     @Given("a scanner with all policies enabled")
     public void enableAllScanners() {
         getScanner().enableAllScanners();
@@ -365,7 +373,8 @@ public class AppScanningSteps {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            getSpider().setMaxDepth(10);
+	    int maxDepth = Config.getInstance().getMaxDepth();
+            getSpider().setMaxDepth(maxDepth);
             getSpider().setThreadCount(10);
             for (String url : Config.getInstance().getSpiderUrls()) {
                 if (url.equalsIgnoreCase("baseurl")) url = Config.getInstance().getBaseUrl();
